@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,44 +11,64 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function DeviceScreen() {
   const navigation = useNavigation();
+
+  const [devices, setDevices] = useState([
+    { id: 1, name: "HealthBand v1.0" }
+  ]);
+
+  const handleAddDevice = () => {
+    const newId = devices.length + 1;
+    setDevices([...devices, { id: newId, name: `HealthBand v${newId}.0` }]);
+  };
+
+  const handleDisconnect = (id: number) => {
+    setDevices(devices.filter(device => device.id !== id));
+  };
+
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Device</Text>
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}>Device</Text>
+        {devices.map((device) => (
+          <View key={device.id} style={styles.deviceCard}>
+            <Text style={styles.deviceName}>{device.name}</Text>
 
-        <View style={styles.deviceCard}>
-          <Text style={styles.deviceName}>HealthBand v1.0</Text>
+            <View style={styles.batteryRow}>
+              <Ionicons name="battery-full" size={24} color="#4ade80" />
+              <Text style={styles.batteryText}>Battery</Text>
+              <Text style={styles.batteryPercent}>100%</Text>
+            </View>
 
-          <View style={styles.batteryRow}>
-            <Ionicons name="battery-full" size={24} color="#4ade80" />
-            <Text style={styles.batteryText}>Battery</Text>
-            <Text style={styles.batteryPercent}>100%</Text>
+            <TouchableOpacity
+              style={styles.disconnectBtn}
+              onPress={() => handleDisconnect(device.id)}
+            >
+              <Text style={styles.buttonText}>Disconnect</Text>
+            </TouchableOpacity>
           </View>
+        ))}
 
-          <TouchableOpacity style={styles.disconnectBtn}>
-            <Text style={styles.buttonText}>Disconnect</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.addBtn}>
-            <Text style={styles.buttonText}>+ Add</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.addBtn} onPress={handleAddDevice}>
+          <Text style={styles.buttonText}>+ Add</Text>
+        </TouchableOpacity>
       </ScrollView>
 
       <View style={styles.bottomNav}>
-      <TouchableOpacity onPress={() => navigation.navigate("MainApp")}>
+        <TouchableOpacity onPress={() => navigation.navigate("MainApp")}>
           <MaterialIcons name="favorite" size={26} color="white" />
         </TouchableOpacity>
         <TouchableOpacity>
           <FontAwesome5 name="hand-paper" size={24} color="white" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-        <Ionicons name="person-circle" size={28} color="white" />
+          <Ionicons name="person-circle" size={28} color="white" />
         </TouchableOpacity>
       </View>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -77,6 +97,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 6,
+    marginTop: 15,
   },
   deviceName: {
     color: "#fff",
@@ -110,8 +131,11 @@ const styles = StyleSheet.create({
   addBtn: {
     backgroundColor: "#f9c94b",
     paddingVertical: 8,
+    marginTop: 15,
     paddingHorizontal: 40,
+    width: 130,
     borderRadius: 8,
+    alignSelf: "center",
   },
   buttonText: {
     color: "#000",

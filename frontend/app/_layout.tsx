@@ -10,6 +10,7 @@ import Deviceadd from './deviceadd';
 import Profile from './ProfileScreen';
 import ProfileSettingsScreen from './profsets';
 import WaterDetails from './WaterDetails'
+import ManualScreen from "./ManualScreen";
 
 const Stack = createStackNavigator();
 
@@ -41,6 +42,7 @@ export default function App() {
         )}
         <Stack.Screen name="Detalinfo" component={Detalinfo} />
         <Stack.Screen name="Device" component={Deviceadd} />
+        <Stack.Screen name="Manual" component={ManualScreen} options={{ headerShown: false }} />
         <Stack.Screen name="WaterDetails" component={WaterDetails} options={{ title: 'Water Details' }} />
       </Stack.Navigator>
   );

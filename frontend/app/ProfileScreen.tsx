@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import * as Linking from "expo-linking";
 
 export default function ProfileScreen({ setIsLoggedIn }) {
   const navigation = useNavigation();
@@ -24,6 +25,19 @@ export default function ProfileScreen({ setIsLoggedIn }) {
     );
   };
 
+const handleFAQ = () => {
+  const email = "healthband12@gmail.com";
+  const subject = "Запит до служби підтримки HealthBand";
+  const body = "Будь ласка, опишіть вашу проблему або запит:";
+  const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  Linking.openURL(mailtoUrl).catch((err) => {
+    console.error("Не вдалося відкрити поштовий клієнт:", err);
+    Alert.alert("Помилка", "Не вдалося відкрити поштовий застосунок.");
+  });
+};
+
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
@@ -37,15 +51,16 @@ export default function ProfileScreen({ setIsLoggedIn }) {
 
         {/* Menu Card */}
         <View style={styles.menuCard}>
-          <TouchableOpacity style={styles.menuItem}>
-            <Image source={require('../assets/images/faq.png')} style={styles.icon} />
-            <Text style={styles.menuText}>FAQ / Report</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={handleFAQ}>
+            <Image source={require("../assets/images/faq.png")} style={styles.icon} />
+            <Text style={styles.menuText}>FAQ / Support</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
-            <Image source={require('../assets/images/user-guide.png')} style={styles.icon} />
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Manual")}>
+            <Image source={require("../assets/images/user-guide.png")} style={styles.icon} />
             <Text style={styles.menuText}>Manual</Text>
           </TouchableOpacity>
+
 
           <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
             <Image source={require('../assets/images/logout.png')} style={styles.icon} />

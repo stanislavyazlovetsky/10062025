@@ -1,42 +1,60 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Ionicons, MaterialIcons, FontAwesome5, Feather } from "@expo/vector-icons";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
+import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ setIsLoggedIn }) {
   const navigation = useNavigation();
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Підтвердження виходу",
+      "Ви дійсно хочете вийти?",
+      [
+        { text: "Скасувати", style: "cancel" },
+        {
+          text: "Вийти",
+          onPress: () => {
+            setIsLoggedIn(false);  // переключаємося на Login стек
+          },
+          style: "destructive",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   return (
     <View style={styles.wrapper}>
-      {/* Основний вміст */}
       <View style={styles.container}>
         <Text style={styles.title}>Profile</Text>
 
-        {/* Profile avatar + name */}
+        {/* Avatar + Name */}
         <View style={styles.profileSection}>
           <Ionicons name="person-circle-outline" size={60} color="white" />
           <Text style={styles.userName}>Your name</Text>
         </View>
 
-        {/* Menu block */}
+        {/* Menu Card */}
         <View style={styles.menuCard}>
           <TouchableOpacity style={styles.menuItem}>
-            <Feather name="settings" size={20} color="white" />
-            <Text style={styles.menuText}>FAQ/Report</Text>
+            <Image source={require('../assets/images/faq.png')} style={styles.icon} />
+            <Text style={styles.menuText}>FAQ / Report</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuItem}>
-            <Ionicons name="book-outline" size={20} color="white" />
+            <Image source={require('../assets/images/user-guide.png')} style={styles.icon} />
             <Text style={styles.menuText}>Manual</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
-            <Text style={[styles.menuText, { marginLeft: 24 }]}>Log out</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+            <Image source={require('../assets/images/logout.png')} style={styles.icon} />
+            <Text style={styles.menuText}>Log out</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Винесений Bottom Navigation */}
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => navigation.navigate("MainApp") }>
           <MaterialIcons name="favorite" size={26} color="white" />
@@ -93,6 +111,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     marginBottom: 12,
+  },
+  icon: {
+    width: 22,
+    height: 22,
+    resizeMode: 'contain',
   },
   menuText: {
     color: "white",

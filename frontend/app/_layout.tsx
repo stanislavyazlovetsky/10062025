@@ -33,10 +33,10 @@ export default function App() {
         ) : (
           <>
             <Stack.Screen name="MainApp" component={MainApp} />
-            <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="ProfileSettings">
-              {(props) => <ProfileSettingsScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
+            <Stack.Screen name="Profile">
+              {(props) => <Profile {...props} setIsLoggedIn={setIsLoggedIn} />}
             </Stack.Screen>
+
           </>
         )}
         <Stack.Screen name="Detalinfo" component={Detalinfo} />

@@ -1,25 +1,82 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
+import { BASE_URL } from '../constants/api';
 
-const ProfileSettingsScreen = ({ navigation, setIsLoggedIn, route }) => {
+const ProfileSettingsScreen = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
-  const [gender, setGender] = useState('');
-  const [birthday, setBirthday] = useState('');
-  const [height, setHeight] = useState('');
+  const [age, setAge] = useState('');
   const [weight, setWeight] = useState('');
-  const [chronicDiseases, setChronicDiseases] = useState('');
+  const [growth, setGrowth] = useState('');
+  const [cupsOfWater, setCupsOfWater] = useState('');
+  const [heartRateMax, setHeartRateMax] = useState('');
+  const [heartRateMin, setHeartRateMin] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSave = () => {
-    setIsLoggedIn(true);
-    navigation.navigate('MainApp');
+  const validateFields = () => {
+    if (
+      !fullName.trim() ||
+      !age.trim() ||
+      !weight.trim() ||
+      !growth.trim() ||
+      !cupsOfWater.trim() ||
+      !heartRateMax.trim() ||
+      !heartRateMin.trim()
+    ) {
+      setErrorMessage('Please fill in all fields');
+      return false;
+    }
+    if (isNaN(Number(age)) || Number(age) <= 0) {
+      setErrorMessage('Age must be a positive number');
+      return false;
+    }
+    if (isNaN(Number(weight)) || Number(weight) <= 0) {
+      setErrorMessage('Weight must be a positive number');
+      return false;
+    }
+    if (isNaN(Number(growth)) || Number(growth) <= 0) {
+      setErrorMessage('Height must be a positive number');
+      return false;
+    }
+    if (isNaN(Number(cupsOfWater)) || Number(cupsOfWater) < 0) {
+      setErrorMessage('Cups of water must be zero or more');
+      return false;
+    }
+    if (isNaN(Number(heartRateMax)) || Number(heartRateMax) <= 0) {
+      setErrorMessage('Heart rate (max) must be a positive number');
+      return false;
+    }
+    if (isNaN(Number(heartRateMin)) || Number(heartRateMin) <= 0) {
+      setErrorMessage('Heart rate (min) must be a positive number');
+      return false;
+    }
+    setErrorMessage('');
+    return true;
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Login' }],
-    });
+  const handleSave = async () => {
+    if (!validateFields()) return;
+
+    try {
+      const payload = {
+        name: fullName,
+        age: Number(age),
+        weight: Number(weight),
+        growth: Number(growth),
+        cups_of_water: Number(cupsOfWater),
+        heart_rate_max: Number(heartRateMax),
+        heart_rate_min: Number(heartRateMin),
+      };
+
+      await axios.post(`${BASE_URL}/profile-settings`, payload);
+
+      Alert.alert('Success', 'Profile saved successfully', [
+        { text: 'OK', onPress: () => navigation.navigate('Login') },
+      ]);
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      setErrorMessage('Failed to save profile. Please try again.');
+    }
   };
 
   return (
@@ -37,27 +94,13 @@ const ProfileSettingsScreen = ({ navigation, setIsLoggedIn, route }) => {
         style={styles.input}
         placeholder="Age"
         placeholderTextColor="#aaa"
-        value={gender}
-        onChangeText={setGender}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Weight"
-        placeholderTextColor="#aaa"
-        value={birthday}
-        onChangeText={setBirthday}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Height (cm)"
-        placeholderTextColor="#aaa"
-        value={height}
-        onChangeText={setHeight}
+        value={age}
+        onChangeText={setAge}
         keyboardType="numeric"
       />
       <TextInput
         style={styles.input}
-        placeholder="Cups of water"
+        placeholder="Weight"
         placeholderTextColor="#aaa"
         value={weight}
         onChangeText={setWeight}
@@ -65,18 +108,38 @@ const ProfileSettingsScreen = ({ navigation, setIsLoggedIn, route }) => {
       />
       <TextInput
         style={styles.input}
+        placeholder="Height (cm)"
+        placeholderTextColor="#aaa"
+        value={growth}
+        onChangeText={setGrowth}
+        keyboardType="numeric"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Cups of water"
+        placeholderTextColor="#aaa"
+        value={cupsOfWater}
+        onChangeText={setCupsOfWater}
+        keyboardType="numeric"
+      />
+      <TextInput
+        style={styles.input}
         placeholder="Heart rate (max)"
         placeholderTextColor="#aaa"
-        value={chronicDiseases}
-        onChangeText={setChronicDiseases}
+        value={heartRateMax}
+        onChangeText={setHeartRateMax}
+        keyboardType="numeric"
       />
       <TextInput
         style={styles.input}
         placeholder="Heart rate (min)"
         placeholderTextColor="#aaa"
-        value={chronicDiseases}
-        onChangeText={setChronicDiseases}
+        value={heartRateMin}
+        onChangeText={setHeartRateMin}
+        keyboardType="numeric"
       />
+
+      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
       <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Save</Text>
@@ -122,6 +185,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  error: {
+    color: 'red',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
 });
 
 export default ProfileSettingsScreen;
+

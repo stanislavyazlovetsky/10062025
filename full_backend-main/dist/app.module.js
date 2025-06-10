@@ -14,6 +14,7 @@ const data_module_1 = require("./data/data.module");
 const user_entity_1 = require("./user.entity");
 const user_service_1 = require("./user.service");
 const user_controller_1 = require("./user.controller");
+const profile_settings_module_1 = require("./profile-settings/profile-settings.module");
 const heart_rate_module_1 = require("./heart-rate/heart-rate.module");
 const blood_oxygen_module_1 = require("./blood-oxygen/blood-oxygen.module");
 const water_intake_module_1 = require("./water-intake/water-intake.module");
@@ -42,6 +43,7 @@ AppModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
             heart_rate_module_1.HeartRateModule,
             blood_oxygen_module_1.BloodOxygenModule,
+            profile_settings_module_1.ProfileSettingsModule,
             water_intake_module_1.WaterIntakeModule,
         ],
         controllers: [user_controller_1.UserController],

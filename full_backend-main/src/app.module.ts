@@ -6,6 +6,7 @@ import { DataModule } from './data/data.module';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
+import { ProfileSettingsModule } from './profile-settings/profile-settings.module';
 
 import { HeartRateModule } from './heart-rate/heart-rate.module';
 import { BloodOxygenModule } from './blood-oxygen/blood-oxygen.module';
@@ -35,6 +36,7 @@ import { WaterIntakeModule } from './water-intake/water-intake.module'; // ✅ �
     TypeOrmModule.forFeature([User]),
     HeartRateModule,
     BloodOxygenModule,
+    ProfileSettingsModule,
     WaterIntakeModule, // ✅ додаємо
   ],
   controllers: [UserController],

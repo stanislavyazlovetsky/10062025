@@ -23,7 +23,9 @@ const Registration = ({ navigation }: any) => {
 
   return (
     <View style={[styles.container, darkTheme ? styles.darkContainer : styles.lightContainer]}>
-      <Text style={[styles.header,{fontFamily:'AbhayaLibre-ExtraBold'},darkTheme?styles.darkText:styles.lightText]}>Healthband</Text>
+      <Text style={[styles.header, { fontFamily: 'AbhayaLibre-ExtraBold' }, darkTheme ? styles.darkText : styles.lightText]}>
+        Healthband
+      </Text>
 
       <View style={styles.inputContainer}>
         <Text style={[styles.label, darkTheme ? styles.darkText : styles.lightText]}>Email</Text>
@@ -50,7 +52,10 @@ const Registration = ({ navigation }: any) => {
 
       {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
-      <TouchableOpacity style={[styles.button, darkTheme ? styles.darkButton : styles.lightButton]} onPress={handleRegister}>
+      <TouchableOpacity
+        style={[styles.button, darkTheme ? styles.darkButton : styles.lightButton]}
+        onPress={handleRegister}
+      >
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
 

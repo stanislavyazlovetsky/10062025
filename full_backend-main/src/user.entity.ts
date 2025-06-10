@@ -5,8 +5,8 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', nullable: false }) // Переконатись, що nullable: false
-  username: string;
+  @Column({ type: 'varchar', nullable: false, unique: true })
+username: string;
 
   @Column({ type: 'varchar', nullable: false }) // Пароль також не має бути null
   password: string;

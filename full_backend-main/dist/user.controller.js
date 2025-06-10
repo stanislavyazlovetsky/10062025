@@ -15,13 +15,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
+const register_dto_1 = require("./register.dto");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
     async register(body) {
-        console.log('Received data for registration:', body);
-        return this.userService.register(body.username, body.password);
+        try {
+            return await this.userService.register(body.username, body.password);
+        }
+        catch (error) {
+            if (error.code === '23505') {
+                throw new common_1.ConflictException('Username already exists');
+            }
+            throw new common_1.BadRequestException(error.message || 'Registration failed');
+        }
     }
     async login(body) {
         return this.userService.login(body.username, body.password);
@@ -29,9 +37,10 @@ let UserController = class UserController {
 };
 __decorate([
     (0, common_1.Post)('register'),
+    (0, common_1.UsePipes)(new common_1.ValidationPipe({ whitelist: true })),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "register", null);
 __decorate([

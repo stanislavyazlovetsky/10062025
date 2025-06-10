@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://192.168.0.103:4000';// Замініть на ваш IP та порт, якщо потрібно
+const API_BASE_URL = 'http://192.168.0.102:4000';// Замініть на ваш IP та порт, якщо потрібно
 
 const api = axios.create({
   baseURL: API_BASE_URL,

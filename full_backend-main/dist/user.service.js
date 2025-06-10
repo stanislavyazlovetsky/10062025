@@ -26,7 +26,7 @@ let UserService = class UserService {
     async register(username, password) {
         const existingUser = await this.userRepository.findOne({ where: { username } });
         if (existingUser) {
-            return { message: 'User already exists' };
+            throw new common_1.ConflictException('User already exists');
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = this.userRepository.create({ username, password: hashedPassword });
@@ -41,11 +41,11 @@ let UserService = class UserService {
     async login(username, password) {
         const user = await this.userRepository.findOne({ where: { username } });
         if (!user) {
-            return { message: 'Invalid credentials' };
+            throw new common_1.UnauthorizedException('Invalid credentials');
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return { message: 'Invalid credentials' };
+            throw new common_1.UnauthorizedException('Invalid credentials');
         }
         const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
         return {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
-const ProfileSettingsScreen = ({ navigation, setIsLoggedIn }: any) => {
+const ProfileSettingsScreen = ({ navigation, setIsLoggedIn, route }) => {
   const [fullName, setFullName] = useState('');
   const [gender, setGender] = useState('');
   const [birthday, setBirthday] = useState('');
@@ -11,9 +11,15 @@ const ProfileSettingsScreen = ({ navigation, setIsLoggedIn }: any) => {
 
   const handleSave = () => {
     setIsLoggedIn(true);
-    setTimeout(() => {
-      navigation.navigate('MainApp');
-    }, 50);
+    navigation.navigate('MainApp');
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
   };
 
   return (
@@ -22,21 +28,21 @@ const ProfileSettingsScreen = ({ navigation, setIsLoggedIn }: any) => {
 
       <TextInput
         style={styles.input}
-        placeholder="Full Name"
+        placeholder="Name"
         placeholderTextColor="#aaa"
         value={fullName}
         onChangeText={setFullName}
       />
       <TextInput
         style={styles.input}
-        placeholder="Gender"
+        placeholder="Age"
         placeholderTextColor="#aaa"
         value={gender}
         onChangeText={setGender}
       />
       <TextInput
         style={styles.input}
-        placeholder="Birthday"
+        placeholder="Weight"
         placeholderTextColor="#aaa"
         value={birthday}
         onChangeText={setBirthday}
@@ -51,7 +57,7 @@ const ProfileSettingsScreen = ({ navigation, setIsLoggedIn }: any) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Weight (kg)"
+        placeholder="Cups of water"
         placeholderTextColor="#aaa"
         value={weight}
         onChangeText={setWeight}
@@ -59,7 +65,14 @@ const ProfileSettingsScreen = ({ navigation, setIsLoggedIn }: any) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Chronic Diseases"
+        placeholder="Heart rate (max)"
+        placeholderTextColor="#aaa"
+        value={chronicDiseases}
+        onChangeText={setChronicDiseases}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Heart rate (min)"
         placeholderTextColor="#aaa"
         value={chronicDiseases}
         onChangeText={setChronicDiseases}
@@ -71,8 +84,6 @@ const ProfileSettingsScreen = ({ navigation, setIsLoggedIn }: any) => {
     </View>
   );
 };
-
-export default ProfileSettingsScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -112,3 +123,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default ProfileSettingsScreen;

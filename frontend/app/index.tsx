@@ -6,21 +6,22 @@ import {
   TouchableOpacity,
   Animated,
   ScrollView,
+  Image,
+  Alert,
 } from "react-native";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { BASE_URL } from "../constants/api";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
 
 export default function MainApp() {
   const navigation = useNavigation();
 
-  const [darkTheme, setDarkTheme] = useState(false);
   const [waterCups, setWaterCups] = useState(0);
   const [waterDate, setWaterDate] = useState(null);
   const [heartRate, setHeartRate] = useState(null);
   const [bloodOxygen, setBloodOxygen] = useState(null);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const menuOpacity = useState(new Animated.Value(0))[0];
 
   const formatDate = (date) => date.toISOString().split("T")[0];
 
@@ -43,15 +44,6 @@ export default function MainApp() {
 
     return () => clearTimeout(timer);
   }, [waterDate]);
-
-  const toggleMenu = () => {
-    setMenuVisible(!menuVisible);
-    Animated.timing(menuOpacity, {
-      toValue: menuVisible ? 0 : 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  };
 
   const fetchLatestHeartRate = async () => {
     try {
@@ -90,6 +82,33 @@ export default function MainApp() {
   const incrementWater = () => setWaterCups((c) => c + 1);
   const decrementWater = () => setWaterCups((c) => (c > 0 ? c - 1 : 0));
 
+const downloadReport = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/report/weekly`);
+    if (!response.ok) throw new Error("Network response was not ok");
+
+    const blob = await response.blob(); // PDF у вигляді blob
+
+    const path = `${FileSystem.documentDirectory}Health_Report.pdf`;
+    const reader = new FileReader();
+
+    reader.onloadend = async () => {
+      const base64Data = reader.result.split(",")[1];
+      await FileSystem.writeAsStringAsync(path, base64Data, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      Alert.alert("Success", "PDF saved to device.");
+      await Sharing.shareAsync(path);
+    };
+
+    reader.readAsDataURL(blob);
+  } catch (error) {
+    Alert.alert("Error", "Failed to download report.");
+    console.error(error);
+  }
+};
+
   return (
     <View style={[styles.container, { backgroundColor: "#0e1013" }]}>
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
@@ -118,6 +137,16 @@ export default function MainApp() {
             <Text style={styles.detailsText}>🟡 Details</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Save Report Button */}
+        <TouchableOpacity style={styles.reportButton} onPress={downloadReport}>
+
+          <Image
+            source={require("../assets/images/clipboard.png")}
+            style={{ width: 24, height: 24, marginRight: 8 }}
+          />
+          <Text style={styles.reportText}>Save Report</Text>
+        </TouchableOpacity>
 
         {/* Water Card */}
         <Text style={styles.reminderTitle}>Water</Text>
@@ -243,7 +272,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
     marginBottom: 12,
-    textAlign: "center",  // <- додано для центрування заголовку
+    textAlign: "center",
   },
   reminderText: {
     color: "#fff",
@@ -258,5 +287,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#1a1d24",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+  },
+  reportButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#2e2e2e",
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 24,
+    justifyContent: "center",
+  },
+  reportText: {
+    color: "#f9c94b",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });

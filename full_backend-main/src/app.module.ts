@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-
+import { FallEventsModule } from './fall-events/fall-events.module';
 import { DataModule } from './data/data.module';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { ProfileSettingsModule } from './profile-settings/profile-settings.module';
-
+import { ReportModule } from './report/report.module';
 import { HeartRateModule } from './heart-rate/heart-rate.module';
 import { BloodOxygenModule } from './blood-oxygen/blood-oxygen.module';
 import { WaterIntakeModule } from './water-intake/water-intake.module'; // ✅ додаємо
@@ -37,7 +37,9 @@ import { WaterIntakeModule } from './water-intake/water-intake.module'; // ✅ �
     HeartRateModule,
     BloodOxygenModule,
     ProfileSettingsModule,
-    WaterIntakeModule, // ✅ додаємо
+    ReportModule,
+    FallEventsModule,
+    WaterIntakeModule,
   ],
   controllers: [UserController],
   providers: [UserService],

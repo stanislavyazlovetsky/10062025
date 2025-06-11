@@ -25,6 +25,13 @@ let ProfileSettingsService = class ProfileSettingsService {
         const profile = this.profileSettingsRepository.create(data);
         return this.profileSettingsRepository.save(profile);
     }
+    async findLatest() {
+        const profiles = await this.profileSettingsRepository.find({
+            order: { created_at: 'DESC' },
+            take: 1,
+        });
+        return profiles.length ? profiles[0] : null;
+    }
 };
 ProfileSettingsService = __decorate([
     (0, common_1.Injectable)(),

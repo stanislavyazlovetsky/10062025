@@ -24,6 +24,13 @@ let ProfileSettingsController = class ProfileSettingsController {
         const profile = await this.profileSettingsService.create(createProfileSettingsDto);
         return { message: 'Profile saved successfully', profile };
     }
+    async getLatest() {
+        const latestProfile = await this.profileSettingsService.findLatest();
+        if (!latestProfile) {
+            return { message: 'No profiles found' };
+        }
+        return latestProfile;
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -32,6 +39,12 @@ __decorate([
     __metadata("design:paramtypes", [create_profile_settings_dto_1.CreateProfileSettingsDto]),
     __metadata("design:returntype", Promise)
 ], ProfileSettingsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)('latest'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ProfileSettingsController.prototype, "getLatest", null);
 ProfileSettingsController = __decorate([
     (0, common_1.Controller)('profile-settings'),
     __metadata("design:paramtypes", [profile_settings_service_1.ProfileSettingsService])

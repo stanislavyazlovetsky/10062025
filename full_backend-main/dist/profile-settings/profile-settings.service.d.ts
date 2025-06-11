@@ -5,4 +5,5 @@ export declare class ProfileSettingsService {
     private profileSettingsRepository;
     constructor(profileSettingsRepository: Repository<ProfileSettings>);
     create(data: CreateProfileSettingsDto): Promise<ProfileSettings>;
+    findLatest(): Promise<ProfileSettings | null>;
 }

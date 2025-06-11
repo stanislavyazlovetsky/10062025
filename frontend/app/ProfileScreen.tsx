@@ -1,11 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import * as Linking from "expo-linking";
+import axios from "axios";
+import { BASE_URL } from "../constants/api";  // переконайся, що там правильно вказаний URL
 
 export default function ProfileScreen({ setIsLoggedIn }) {
   const navigation = useNavigation();
+  const [userName, setUserName] = useState("Your name");
+
+  useEffect(() => {
+    const fetchLatestName = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/profile-settings/latest`);
+        if (response.data && response.data.name) {
+          setUserName(response.data.name);
+        }
+      } catch (error) {
+        console.error("Помилка при отриманні імені:", error);
+      }
+    };
+
+    fetchLatestName();
+  }, []);
 
   const handleLogout = () => {
     Alert.alert(
@@ -25,18 +43,17 @@ export default function ProfileScreen({ setIsLoggedIn }) {
     );
   };
 
-const handleFAQ = () => {
-  const email = "healthband12@gmail.com";
-  const subject = "Запит до служби підтримки HealthBand";
-  const body = "Будь ласка, опишіть вашу проблему або запит:";
-  const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const handleFAQ = () => {
+    const email = "healthband12@gmail.com";
+    const subject = "Запит до служби підтримки HealthBand";
+    const body = "Будь ласка, опишіть вашу проблему або запит:";
+    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-  Linking.openURL(mailtoUrl).catch((err) => {
-    console.error("Не вдалося відкрити поштовий клієнт:", err);
-    Alert.alert("Помилка", "Не вдалося відкрити поштовий застосунок.");
-  });
-};
-
+    Linking.openURL(mailtoUrl).catch((err) => {
+      console.error("Не вдалося відкрити поштовий клієнт:", err);
+      Alert.alert("Помилка", "Не вдалося відкрити поштовий застосунок.");
+    });
+  };
 
   return (
     <View style={styles.wrapper}>
@@ -46,7 +63,7 @@ const handleFAQ = () => {
         {/* Avatar + Name */}
         <View style={styles.profileSection}>
           <Ionicons name="person-circle-outline" size={60} color="white" />
-          <Text style={styles.userName}>Your name</Text>
+          <Text style={styles.userName}>{userName}</Text>
         </View>
 
         {/* Menu Card */}
@@ -61,7 +78,6 @@ const handleFAQ = () => {
             <Text style={styles.menuText}>Manual</Text>
           </TouchableOpacity>
 
-
           <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
             <Image source={require('../assets/images/logout.png')} style={styles.icon} />
             <Text style={styles.menuText}>Log out</Text>
@@ -71,13 +87,13 @@ const handleFAQ = () => {
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity onPress={() => navigation.navigate("MainApp") }>
+        <TouchableOpacity onPress={() => navigation.navigate("MainApp")}>
           <MaterialIcons name="favorite" size={26} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Device") }>
+        <TouchableOpacity onPress={() => navigation.navigate("Device")}>
           <FontAwesome5 name="hand-paper" size={24} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Profile") }>
+        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
           <Ionicons name="person-circle" size={28} color="white" />
         </TouchableOpacity>
       </View>
@@ -130,7 +146,7 @@ const styles = StyleSheet.create({
   icon: {
     width: 22,
     height: 22,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   menuText: {
     color: "white",

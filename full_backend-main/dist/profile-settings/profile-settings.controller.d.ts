@@ -7,4 +7,7 @@ export declare class ProfileSettingsController {
         message: string;
         profile: import("./profile-settings.entity").ProfileSettings;
     }>;
+    getLatest(): Promise<import("./profile-settings.entity").ProfileSettings | {
+        message: string;
+    }>;
 }

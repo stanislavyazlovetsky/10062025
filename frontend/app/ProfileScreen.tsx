@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-na
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import * as Linking from "expo-linking";
-import axios from "axios";
+import axiosClient from "../src/api/axiosClient";
 import { BASE_URL } from "../constants/api";  // переконайся, що там правильно вказаний URL
 
 export default function ProfileScreen({ setIsLoggedIn }) {
@@ -13,7 +13,7 @@ export default function ProfileScreen({ setIsLoggedIn }) {
   useEffect(() => {
     const fetchLatestName = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/profile-settings/latest`);
+        const response = await axiosClient.get(`${BASE_URL}/profile-settings/latest`);
         if (response.data && response.data.name) {
           setUserName(response.data.name);
         }
